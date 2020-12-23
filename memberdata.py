@@ -3,6 +3,7 @@ import requests
 import re
 
 
+
 def start():
 	r = requests.get("https://wikiwiki.jp/nijisanji/"+"える");
 	d = BeautifulSoup(r.text, "html.parser")
@@ -13,6 +14,18 @@ def start():
 	Datas.pop(0)
 	Datas.pop(-1)
 	i = 0
+
+
+	#チャンネル取得方法確認部
+	if Datas[0].find('strong').text == "主な活動場所":
+		print("type_A")
+		print(Datas[0].find_all("td")[1].find_all("a")[0].get("href"))
+		print(Datas[0].find_all("td")[1].find_all("a")[1].get("href"))
+		Datas.pop(0)
+	else:
+		print("お腹すいたwikiwiki")
+
+
 	for Data in Datas:
 		i = i+1
 		print(Data.find('strong').text + "  *"+ str(i)+"番目")
@@ -23,10 +36,9 @@ def start():
 			namedata =Data.find_all("td")[1].text
 			print(Data.find_all("td")[1].text)
 			print(re.search("ファンの呼称：.*ファンマーク",namedata).group().replace("ファンの呼称：","").replace("ファンマーク",""))
-			print(re.search("ファンマーク.+", namedata))
+			fansmark = re.search("ファンマーク(.+)", namedata).group(1)
+			print(fansmark)
 
+			print(fansmark.replace(re.search("(.*)",fansmark)).group(1).text,"")
 
-	#チャンネル取得方法確認部
-	if Datas[1].find('strong').text == "主な活動場所":
-		print("type_A")
 start()
